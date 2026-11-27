@@ -1,6 +1,6 @@
 # Loan Screening — Java 21 · Spring Boot 3 · Liquibase · JobRunr · Drools
 
-[![CI](https://github.com/OWNER/loan-screening/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/loan-screening/actions/workflows/ci.yml)
+[![CI](https://github.com/GeovanniChapman/loan-screening-prototype/actions/workflows/ci.yml/badge.svg)](https://github.com/GeovanniChapman/loan-screening-prototype/actions/workflows/ci.yml)
 
 A small, fully tested prototype that shows how to combine five technologies in a clean way.
 A client submits a **loan application**; the API answers immediately (`202 Accepted`) and a
