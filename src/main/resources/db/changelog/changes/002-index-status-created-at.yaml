@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-index-status-created-at
+      author: geo
+      comment: Speeds up the sweeper query (status = PENDING and created_at < cutoff).
+      changes:
+        - createIndex:
+            indexName: idx_loan_application_status_created_at
+            tableName: loan_application
+            columns:
+              - column:
+                  name: status
+              - column:
+                  name: created_at

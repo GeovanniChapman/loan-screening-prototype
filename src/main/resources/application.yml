@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: loan-screening
+
+  datasource:
+    # In-memory H2 in PostgreSQL-compatibility mode: zero setup for a prototype.
+    # DB_CLOSE_DELAY=-1 keeps the DB alive while the JVM runs (needed by JobRunr's extra connections).
+    url: jdbc:h2:mem:loans;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+
+  jpa:
+    open-in-view: false            # no lazy loading in the web layer
+    hibernate:
+      ddl-auto: validate           # Liquibase owns the schema; Hibernate only checks it matches
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  mvc:
+    problemdetails:
+      enabled: true                # RFC 9457 error bodies for validation errors
+
+  threads:
+    virtual:
+      enabled: true                # Java 21 virtual threads for Tomcat request handling
+
+jobrunr:
+  database:
+    skip-create: false             # JobRunr creates its own tables (prefixed jobrunr_) on startup
+  background-job-server:
+    enabled: true                  # run workers inside this application
+    poll-interval-in-seconds: 5    # how often workers look for new jobs (5 is the minimum)
+  dashboard:
+    enabled: true                  # http://localhost:8000
+    port: 8000
+
+loan-screening:
+  sweep:
+    cron: "*/1 * * * *"            # every minute
+  sweep-stale-after: PT2M          # PENDING for more than 2 minutes => re-schedule

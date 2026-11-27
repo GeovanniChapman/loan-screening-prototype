@@ -1,0 +1,7 @@
+# Master changelog: lists the changelog files in the order they must run.
+# Never edit a changeset that has been applied anywhere; add a new file instead.
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-loan-application.yaml
+  - include:
+      file: db/changelog/changes/002-index-status-created-at.yaml

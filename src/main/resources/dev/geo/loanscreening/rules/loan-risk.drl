@@ -1,0 +1,53 @@
+// ---------------------------------------------------------------------------
+// Loan risk rules.
+//
+// Input : one LoanFact (credit score + loan-to-income ratio)
+// Output: each matching rule reports a verdict to the `verdicts` global.
+//         Rules fire from the highest `salience` to the lowest, and the engine
+//         keeps the FIRST verdict, so a higher salience means a stronger rule.
+//
+//   salience 100  hard rejections      (never overridden)
+//   salience  50  manual review        (borderline profiles)
+//   salience  10  automatic approval   (healthy profiles)
+//
+// The four conditions below form a complete partition of the input space, so
+// exactly the intended rule "wins" for every possible application.
+// ---------------------------------------------------------------------------
+package dev.geo.loanscreening.rules;
+
+import dev.geo.loanscreening.rules.LoanFact;
+import dev.geo.loanscreening.rules.DecisionCollector;
+
+global DecisionCollector verdicts;
+
+rule "Reject - credit score below 500"
+    salience 100
+    when
+        LoanFact( creditScore < 500 )
+    then
+        verdicts.reject("Credit score below 500");
+end
+
+rule "Reject - loan exceeds 10x annual income"
+    salience 100
+    when
+        LoanFact( loanToIncomeRatio > 10.0 )
+    then
+        verdicts.reject("Requested amount is more than 10x the annual income");
+end
+
+rule "Manual review - borderline profile"
+    salience 50
+    when
+        LoanFact( creditScore < 650 || loanToIncomeRatio > 5.0 )
+    then
+        verdicts.manualReview("Credit score below 650 or loan above 5x annual income");
+end
+
+rule "Approve - healthy profile"
+    salience 10
+    when
+        LoanFact( creditScore >= 650, loanToIncomeRatio <= 5.0 )
+    then
+        verdicts.approve("Credit score >= 650 and loan at most 5x annual income");
+end
